@@ -1,0 +1,12 @@
+D:\repos\bongocat\bongocat\obj\Debug\bongocat.csproj.AssemblyReference.cache
+D:\repos\bongocat\bongocat\obj\Debug\bongocat.Properties.Resources.resources
+D:\repos\bongocat\bongocat\obj\Debug\bongocat.csproj.GenerateResource.cache
+D:\repos\bongocat\bongocat\obj\Debug\bongocat.csproj.CoreCompileInputs.cache
+D:\repos\bongocat\bongocat\bin\Debug\bongocat.exe.config
+D:\repos\bongocat\bongocat\bin\Debug\bongocat.exe
+D:\repos\bongocat\bongocat\bin\Debug\bongocat.pdb
+D:\repos\bongocat\bongocat\obj\Debug\bongocat.Form1.resources
+D:\repos\bongocat\bongocat\obj\Debug\bongocat.exe
+D:\repos\bongocat\bongocat\obj\Debug\bongocat.pdb
+D:\repos\bongocat\bongocat\obj\Debug\bongocat.exe.config
+D:\repos\bongocat\bongocat\obj\Debug\bongocat.csproj.Up2Date
