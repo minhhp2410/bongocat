@@ -25,10 +25,12 @@ namespace bongocat
         PictureBox rightPaw = new PictureBox();
         PictureBox leftPaw = new PictureBox();
 
+        Image l_up, l_wave, ls_left, ls_right, r_up, r_wave, rs_left, rs_right, bg;
+
         Random random = new Random();
-        string[] imgs;
-        string[] imgs1;
-        string[] imgs2;
+        Image[] imgs;
+        Image[] imgs1;
+        Image[] imgs2;
         int WM_X = 0;
         string path = @"imgs\";
 
@@ -41,19 +43,30 @@ namespace bongocat
             _mouseHookID = SetMouseHook(_mouseProc);
             string mode = File.ReadAllText(@"mode.txt").Trim();
             path += mode+@"\";
-            imgs = new string[2] { path+"rs_left.png", path+"rs_right.png" };
-            imgs1 = new string[2] { path+"l_up.png", path+"l_wave.png" };
-            imgs2 = new string[2] { path+"r_up.png", path+"r_wave.png" };
 
-            pictureBox1.Image = Image.FromFile(path+"bg.png");
+            l_up = (Image)Image.FromFile(path+"l_up.png").Clone();
+            l_wave = (Image)Image.FromFile(path+"l_wave.png").Clone();
+            ls_left = (Image)Image.FromFile(path+"ls_left.png").Clone();
+            ls_right = (Image)Image.FromFile(path+"ls_right.png").Clone();
+            r_up = (Image)Image.FromFile(path+"r_up.png").Clone();
+            r_wave = (Image)Image.FromFile(path+"r_wave.png").Clone();
+            rs_left = (Image)Image.FromFile(path+"rs_left.png").Clone();
+            rs_right = (Image)Image.FromFile(path+"rs_right.png").Clone();
+            bg = (Image)Image.FromFile(path+ "bg.png").Clone();
 
-            rightPaw.Image = Image.FromFile(path+"r_up.png");
+            imgs = new Image[] { rs_left, rs_right };
+            imgs2 = new Image[] { r_wave, r_up };
+            imgs1 = new Image[] { l_wave, l_up };
+
+            pictureBox1.Image = bg;
+
+            rightPaw.Image = r_up;
             rightPaw.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox1.Controls.Add(rightPaw);
             rightPaw.Dock = DockStyle.Fill;
             rightPaw.Location = new Point(0, 0);
 
-            leftPaw.Image = Image.FromFile(path+"l_up.png");
+            leftPaw.Image = l_up;
             leftPaw.SizeMode = PictureBoxSizeMode.StretchImage;
             rightPaw.Controls.Add(leftPaw);
             leftPaw.Dock = DockStyle.Fill;
@@ -140,7 +153,7 @@ namespace bongocat
                 {
                     ///key down
                     //textBox1.AppendText($"Key Pressed: {(Keys)vkCode}{Environment.NewLine}");
-                    rightPaw.Image = Image.FromFile(imgs[random.Next(0, 2)]);
+                    rightPaw.Image = imgs[random.Next(0, 2)];
                 });
             }
             else if (nCode >= 0 && wParam == (IntPtr)WM_KEYUP)
@@ -151,7 +164,7 @@ namespace bongocat
                 {
                     ///key up
                     //textBox1.AppendText($"Key Pressed: {(Keys)vkCode}{Environment.NewLine}");
-                    rightPaw.Image = Image.FromFile(imgs2[random.Next(0, 2)]);
+                    rightPaw.Image = imgs2[random.Next(0, 2)];
                 });
             }
             GC.Collect();
@@ -172,11 +185,13 @@ namespace bongocat
                         int x = hookStruct.pt.X;
                         if (WM_X < x)
                         {
-                            leftPaw.Image = Image.FromFile(imgs1[1]);
+                            if(leftPaw.Image != imgs1[0])
+                            leftPaw.Image = imgs1[0];
                         }
                         else if (WM_X > x)
                         {
-                            leftPaw.Image = Image.FromFile(imgs1[0]);
+                            if (leftPaw.Image != imgs1[1])
+                                leftPaw.Image = imgs1[1];
                         }
                         WM_X = x;
                     });
@@ -187,7 +202,7 @@ namespace bongocat
                     this.Invoke((MethodInvoker)delegate
                     {
                         //textBox1.AppendText($"Left Mouse Click at ({hookStruct.pt.X}, {hookStruct.pt.Y}){Environment.NewLine}");
-                        leftPaw.Image = Image.FromFile(path+"ls_left.png");
+                        leftPaw.Image = ls_left;
                     });
                 }
                 else if (wParam == (IntPtr)WM_RBUTTONDOWN)
@@ -195,12 +210,12 @@ namespace bongocat
                     this.Invoke((MethodInvoker)delegate
                     {
                         //textBox1.AppendText($"Right Mouse Click at ({hookStruct.pt.X}, {hookStruct.pt.Y}){Environment.NewLine}");
-                        leftPaw.Image = Image.FromFile(path+"ls_right.png");
+                        leftPaw.Image = ls_right;
                     });
                 }
-                else
+                else if(wParam == (IntPtr)WM_MOUSEUP)
                 {
-                    leftPaw.Image = Image.FromFile(imgs1[random.Next(0, 2)]);
+                    leftPaw.Image = imgs1[random.Next(0, 2)];
                 }
             }
             GC.Collect();
