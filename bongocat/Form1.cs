@@ -213,7 +213,7 @@ namespace bongocat
                         leftPaw.Image = ls_right;
                     });
                 }
-                else if(wParam == (IntPtr)WM_MOUSEUP)
+                else
                 {
                     leftPaw.Image = imgs1[random.Next(0, 2)];
                 }
