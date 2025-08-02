@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AvoidFlickering;
+using Newtonsoft.Json;
 
 namespace bongocat
 {
@@ -24,6 +25,8 @@ namespace bongocat
 
         PictureBox rightPaw = new PictureBox();
         PictureBox leftPaw = new PictureBox();
+        bool isMouseDown = false;
+        bool isKeyDown = false;
 
         Image l_up, l_wave, ls_left, ls_right, r_up, r_wave, rs_left, rs_right, bg;
 
@@ -41,7 +44,9 @@ namespace bongocat
             _mouseProc = HookCallbackMouse;
             _keyboardHookID = SetKeyboardHook(_keyboardProc);
             _mouseHookID = SetMouseHook(_mouseProc);
-            string mode = File.ReadAllText(@"mode.txt").Trim();
+            UserConfig config = JsonConvert.DeserializeObject<UserConfig>(File.ReadAllText("mode.txt"));
+            string mode = config.Folder;
+            string format = config.BgFormat;
             path += mode+@"\";
 
             l_up = (Image)Image.FromFile(path+"l_up.png").Clone();
@@ -52,7 +57,7 @@ namespace bongocat
             r_wave = (Image)Image.FromFile(path+"r_wave.png").Clone();
             rs_left = (Image)Image.FromFile(path+"rs_left.png").Clone();
             rs_right = (Image)Image.FromFile(path+"rs_right.png").Clone();
-            bg = (Image)Image.FromFile(path+ "bg.png").Clone();
+            bg = (Image)Image.FromFile(path+ "bg." + format).Clone();
 
             imgs = new Image[] { rs_left, rs_right };
             imgs2 = new Image[] { r_wave, r_up };
@@ -82,6 +87,7 @@ namespace bongocat
             };
         }
 
+        #region hook setup
         // Windows API declarations
         private const int WH_KEYBOARD_LL = 13;
         private const int WH_MOUSE_LL = 14;
@@ -142,6 +148,7 @@ namespace bongocat
                 return SetWindowsHookEx(WH_MOUSE_LL, proc, GetModuleHandle(curModule.ModuleName), 0);
             }
         }
+#endregion
 
         private IntPtr HookCallbackKeyboard(int nCode, IntPtr wParam, IntPtr lParam)
         {
@@ -153,7 +160,11 @@ namespace bongocat
                 {
                     ///key down
                     //textBox1.AppendText($"Key Pressed: {(Keys)vkCode}{Environment.NewLine}");
-                    rightPaw.Image = imgs[random.Next(0, 2)];
+                    if (!isKeyDown)
+                    {
+                        rightPaw.Image = imgs[random.Next(0, 2)];
+                        isKeyDown = true;
+                    }
                 });
             }
             else if (nCode >= 0 && wParam == (IntPtr)WM_KEYUP)
@@ -164,6 +175,7 @@ namespace bongocat
                 {
                     ///key up
                     //textBox1.AppendText($"Key Pressed: {(Keys)vkCode}{Environment.NewLine}");
+                    isKeyDown = false;
                     rightPaw.Image = imgs2[random.Next(0, 2)];
                 });
             }
@@ -183,6 +195,7 @@ namespace bongocat
                         //mouse move
                         //textBox1.Text = ($"({hookStruct.pt.X}, {hookStruct.pt.Y})");
                         int x = hookStruct.pt.X;
+                        if(!isMouseDown)
                         if (WM_X < x)
                         {
                             if(leftPaw.Image != imgs1[0])
@@ -199,14 +212,17 @@ namespace bongocat
                 ///mouse click
                 else if (wParam == (IntPtr)WM_LBUTTONDOWN)
                 {
+                    isMouseDown = true;
                     this.Invoke((MethodInvoker)delegate
                     {
                         //textBox1.AppendText($"Left Mouse Click at ({hookStruct.pt.X}, {hookStruct.pt.Y}){Environment.NewLine}");
+                        
                         leftPaw.Image = ls_left;
                     });
                 }
                 else if (wParam == (IntPtr)WM_RBUTTONDOWN)
                 {
+                    isMouseDown = true;
                     this.Invoke((MethodInvoker)delegate
                     {
                         //textBox1.AppendText($"Right Mouse Click at ({hookStruct.pt.X}, {hookStruct.pt.Y}){Environment.NewLine}");
@@ -215,6 +231,7 @@ namespace bongocat
                 }
                 else
                 {
+                    isMouseDown = false;
                     leftPaw.Image = imgs1[random.Next(0, 2)];
                 }
             }

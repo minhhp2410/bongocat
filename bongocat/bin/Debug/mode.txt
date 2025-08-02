@@ -1,1 +1,4 @@
-mita
+{
+"folder" : "mita2",
+"bgFomat" : "gif"
+}

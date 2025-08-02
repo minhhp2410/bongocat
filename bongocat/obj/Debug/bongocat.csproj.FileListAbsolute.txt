@@ -10,3 +10,5 @@ D:\repos\bongocat\bongocat\obj\Debug\bongocat.exe
 D:\repos\bongocat\bongocat\obj\Debug\bongocat.pdb
 D:\repos\bongocat\bongocat\obj\Debug\bongocat.exe.config
 D:\repos\bongocat\bongocat\obj\Debug\bongocat.csproj.Up2Date
+D:\repos\bongocat\bongocat\bin\Debug\Newtonsoft.Json.dll
+D:\repos\bongocat\bongocat\bin\Debug\Newtonsoft.Json.xml
