@@ -1,4 +1,11 @@
 {
-"folder" : "mita2",
-"bgFomat" : "gif"
+  "folder": "mita2",
+  "bgFomat": "gif",
+  "app": {
+    "appSize": "337, 187",
+    "appPosition": "-7, 848",
+    "border": 0,
+    "topMost": true,
+    "transparentKey": "Control"
+  }
 }

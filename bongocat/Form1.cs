@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -35,6 +36,7 @@ namespace bongocat
         Image[] imgs1;
         Image[] imgs2;
         int WM_X = 0;
+        UserConfig config;
         string path = @"imgs\";
 
         public Form1()
@@ -44,7 +46,7 @@ namespace bongocat
             _mouseProc = HookCallbackMouse;
             _keyboardHookID = SetKeyboardHook(_keyboardProc);
             _mouseHookID = SetMouseHook(_mouseProc);
-            UserConfig config = JsonConvert.DeserializeObject<UserConfig>(File.ReadAllText("mode.txt"));
+            config = JsonConvert.DeserializeObject<UserConfig>(File.ReadAllText("mode.txt"));
             string mode = config.Folder;
             string format = config.BgFormat;
             path += mode+@"\";
@@ -238,7 +240,7 @@ namespace bongocat
             GC.Collect();
             return CallNextHookEx(_mouseHookID, nCode, wParam, lParam);
         }
-
+        
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.F1)
@@ -254,10 +256,29 @@ namespace bongocat
                     this.TransparencyKey = Color.BlueViolet;
                 }
             }
-            if (e.KeyCode == Keys.F2)
+            else if (e.KeyCode == Keys.F2)
             {
                 this.TopMost = !this.TopMost;
+            }
+            else if (e.Control && e.KeyCode == Keys.F3)
+            {
+                config.App.AppSize = this.Size;
+                config.App.AppPosition = this.Location;
+                config.App.FormBorder = this.FormBorderStyle;
+                config.App.TopMost = this.TopMost;
+                config.App.TransparentKey = this.TransparencyKey;
+                string json = JsonConvert.SerializeObject(config, Formatting.Indented);
+                File.WriteAllText("mode.txt", json);
+            }
+            else if (e.KeyCode == Keys.F3)
+            {
+                this.TopMost = config.App.TopMost;
+                this.FormBorderStyle = config.App.FormBorder;
+                this.Location = config.App.AppPosition;
+                this.Size = config.App.AppSize;
+                this.TransparencyKey = config.App.TransparentKey;
             }
         }
     }
 }
+    
